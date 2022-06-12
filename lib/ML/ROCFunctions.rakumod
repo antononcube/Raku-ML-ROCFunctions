@@ -145,7 +145,7 @@ my %ROCFunctions =
         'MatthewsCorrelationCoefficient' => &MCC;
 
 
-proto roc-functions() is export {*}
+proto roc-functions($spec) is export {*}
 
 multi sub roc-functions(Str $spec) {
     given $spec.lc {
