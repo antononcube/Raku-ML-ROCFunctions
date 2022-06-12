@@ -1,0 +1,28 @@
+{
+  "name": "ML::ROCFunctions",
+  "description": "Package for computations of Receiver Operating Characteristic (ROC) functions.",
+  "version": "0.1.0",
+  "perl": "6.d",
+  "authors": [
+    "Anton Antonov"
+  ],
+  "auth": "zef:antononcube",
+  "depends": [],
+  "build-depends": [],
+  "test-depends": [],
+  "provides": {
+    "ML::ROCFunctions": "lib/ML/ROCFunctions.rakumod"
+  },
+  "resources": [
+  ],
+  "license": "",
+  "tags": [
+    "ROC",
+    "ML",
+    "Receiver Operating Characteristic",
+    "machine learning",
+    "classification"
+  ],
+  "api": "1",
+  "source-url": "https://github.com/antononcube/Raku-ML-ROCFunctions.git"
+}
