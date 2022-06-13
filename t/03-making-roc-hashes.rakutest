@@ -1,0 +1,31 @@
+use v6.d;
+use Test;
+
+use lib '.';
+use lib './lib';
+
+use ML::ROCFunctions;
+
+plan 2;
+
+## 1
+is-deeply
+        to-roc-hash('True', 'False', <True True False>, <False True False>),
+        { FalseNegative => 1, FalsePositive => 0, TrueNegative => 1, TruePositive => 1 },
+        'ROC making';
+
+
+## 2
+is-deeply
+        to-roc-hash(
+                true-label => 'True',
+                false-label => 'False',
+                actual => <True True False>,
+                predicted => <False True False>,
+                sep => '@@'),
+        to-roc-hash('True', 'False', <True True False>, <False True False>),
+        'ROC making equivalence';
+
+
+done-testing;
+
