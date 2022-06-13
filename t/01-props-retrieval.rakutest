@@ -6,7 +6,7 @@ use lib './lib';
 
 use ML::ROCFunctions;
 
-plan 4;
+plan 5;
 
 ## 1
 isa-ok roc-functions('properties'), List, 'properties';
@@ -19,6 +19,9 @@ isa-ok roc-functions('FunctionInterpretations'), Hash, 'FunctionInterpretations'
 
 ## 4
 isa-ok roc-functions('FunctionNames'), List, 'FunctionNames';
+
+## 5
+is-deeply roc-functions(), roc-functions('Functions'), 'No arguments is the same as "Functions"';
 
 done-testing;
 
