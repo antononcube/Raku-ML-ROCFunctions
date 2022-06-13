@@ -27,7 +27,7 @@ multi sub TPR(@rocs where ([&&] @rocs.map({ is-roc-associate($_) }))) {
 
 proto sub SPC(%rocAssoc) is export {*}
 multi sub SPC(%rocAssoc where is-roc-associate(%rocAssoc)) {
-    (%rocAssoc<TrueNegative>) / (%rocAssoc<FalsePostive> + %rocAssoc<TrueNegative>);
+    (%rocAssoc<TrueNegative>) / (%rocAssoc<FalsePositive> + %rocAssoc<TrueNegative>);
 }
 multi sub SPC(@rocs where ([&&] @rocs.map({ is-roc-associate($_) }))) {
     @rocs.map({ SPC($_) }).Array
@@ -97,17 +97,26 @@ multi sub F1(@rocs where ([&&] @rocs.map({ is-roc-associate($_) }))) {
     @rocs.map({ F1($_) }).Array
 }
 
-proto sub AUROC(%rocAssoc) is export {*}
-multi sub AUROC(%rocAssoc where is-roc-associate(%rocAssoc)) {
-    1
-}
-multi sub AUROC(@rocs where ([&&] @rocs.map({ is-roc-associate($_) }))) {
-    @rocs.map({ AUROC($_) }).Array
+sub AUROC(@rocs where ([&&] @rocs.map({ is-roc-associate($_) }))) is export {
+        my @fprs = @rocs.map({ FPR($_) }).Array.prepend(0).append(1);
+        my @tprs = @rocs.map({ TPR($_) }).Array.prepend(0).append(1);
+
+        my $sum = 0;
+        for 0..^(@fprs.elems-1) -> $i {
+                $sum += (@fprs[$i+1] - @fprs[$i]) * (@tprs[$i] + (@tprs[$i+1] - @tprs[$i]) / 2)
+        }
+        return $sum;
 }
 
 proto sub MCC(%rocAssoc) is export {*}
 multi sub MCC(%rocAssoc where is-roc-associate(%rocAssoc)) {
-    1
+        my ($tp, $tn, $fp, $fn);
+        my ($tpfp, $tpfn, $tnfp, $tnfn);
+
+        ($tp, $tn, $fp, $fn) = (&TPR, &SPC, &FPR, &FNR).map({ $_(%rocAssoc) });
+        ($tpfp, $tpfn, $tnfp, $tnfn) = ($tp + $fp, $tp + $fn, $tn + $fp, $tn + $fn).map({ $_ == 0 ?? 1 !! $_ });
+
+        ($tp * $tn - $fp * $fn) / sqrt( $tpfp * $tpfn * $tnfp * $tnfn )
 }
 multi sub MCC(@rocs where ([&&] @rocs.map({ is-roc-associate($_) }))) {
     @rocs.map({ MCC($_) }).Array
@@ -149,8 +158,8 @@ proto roc-functions($spec) is export {*}
 
 multi sub roc-functions(Str $spec) {
     given $spec.lc {
-        when 'methods' { <FunctionInterpretations FunctionNames Functions Methods Properties> }
-        when 'properties' { roc-functions('methods') }
+        when 'Methods'.lc { <FunctionInterpretations FunctionNames Functions Methods Properties> }
+        when 'Properties'.lc { roc-functions('methods') }
         when 'FunctionNames'.lc { %ROCAcronyms.keys }
         when 'FunctionInterpretations'.lc { %ROCAcronyms }
         when 'FunctionsAssociation'.lc { %ROCFunctions }
