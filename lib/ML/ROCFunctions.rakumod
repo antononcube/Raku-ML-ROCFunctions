@@ -17,7 +17,7 @@ sub is-roc-associate($obj) is export {
 # ROCs
 #------------------------------------------------------------
 
-proto sub TPR(%rocAssoc) is export {*}
+proto sub TPR($) is export {*}
 multi sub TPR(%rocAssoc where is-roc-associate(%rocAssoc)) {
     (%rocAssoc<TruePositive>) / (%rocAssoc<TruePositive> + %rocAssoc<FalseNegative>);
 }
@@ -25,7 +25,7 @@ multi sub TPR(@rocs where ([&&] @rocs.map({ is-roc-associate($_) }))) {
     @rocs.map({ TPR($_) }).Array
 }
 
-proto sub SPC(%rocAssoc) is export {*}
+proto sub SPC($) is export {*}
 multi sub SPC(%rocAssoc where is-roc-associate(%rocAssoc)) {
     (%rocAssoc<TrueNegative>) / (%rocAssoc<FalsePositive> + %rocAssoc<TrueNegative>);
 }
@@ -33,7 +33,7 @@ multi sub SPC(@rocs where ([&&] @rocs.map({ is-roc-associate($_) }))) {
     @rocs.map({ SPC($_) }).Array
 }
 
-proto sub PPV(%rocAssoc) is export {*}
+proto sub PPV($) is export {*}
 multi sub PPV(%rocAssoc where is-roc-associate(%rocAssoc)) {
     (%rocAssoc<TruePositive>) / (%rocAssoc<TruePositive> + %rocAssoc<FalsePositive>);
 }
@@ -41,7 +41,7 @@ multi sub PPV(@rocs where ([&&] @rocs.map({ is-roc-associate($_) }))) {
     @rocs.map({ PPV($_) }).Array
 }
 
-proto sub NPV(%rocAssoc) is export {*}
+proto sub NPV($) is export {*}
 multi sub NPV(%rocAssoc where is-roc-associate(%rocAssoc)) {
     (%rocAssoc<TrueNegative>) / (%rocAssoc<TrueNegative> + %rocAssoc<FalseNegative>);
 }
@@ -49,7 +49,7 @@ multi sub NPV(@rocs where ([&&] @rocs.map({ is-roc-associate($_) }))) {
     @rocs.map({ NPV($_) }).Array
 }
 
-proto sub FPR(%rocAssoc) is export {*}
+proto sub FPR($) is export {*}
 multi sub FPR(%rocAssoc where is-roc-associate(%rocAssoc)) {
     (%rocAssoc<FalsePositive>) / (%rocAssoc<FalsePositive> + %rocAssoc<TrueNegative>);
 }
@@ -57,7 +57,7 @@ multi sub FPR(@rocs where ([&&] @rocs.map({ is-roc-associate($_) }))) {
     @rocs.map({ FPR($_) }).Array
 }
 
-proto sub FDR(%rocAssoc) is export {*}
+proto sub FDR($) is export {*}
 multi sub FDR(%rocAssoc where is-roc-associate(%rocAssoc)) {
     (%rocAssoc<FalsePositive>) / (%rocAssoc<FalsePositive> + %rocAssoc<TruePositive>);
 }
@@ -65,7 +65,7 @@ multi sub FDR(@rocs where ([&&] @rocs.map({ is-roc-associate($_) }))) {
     @rocs.map({ FDR($_) }).Array
 }
 
-proto sub FNR(%rocAssoc) is export {*}
+proto sub FNR($) is export {*}
 multi sub FNR(%rocAssoc where is-roc-associate(%rocAssoc)) {
     (%rocAssoc<FalseNegative>) / (%rocAssoc<FalseNegative> + %rocAssoc<TruePositive>);
 }
@@ -73,7 +73,7 @@ multi sub FNR(@rocs where ([&&] @rocs.map({ is-roc-associate($_) }))) {
     @rocs.map({ FNR($_) }).Array
 }
 
-proto sub ACC(%rocAssoc) is export {*}
+proto sub ACC($) is export {*}
 multi sub ACC(%rocAssoc where is-roc-associate(%rocAssoc)) {
     (%rocAssoc<TruePositive> + %rocAssoc<TrueNegative>) / ([+] %rocAssoc.values);
 }
@@ -81,7 +81,7 @@ multi sub ACC(@rocs where ([&&] @rocs.map({ is-roc-associate($_) }))) {
     @rocs.map({ ACC($_) }).Array
 }
 
-proto sub FOR(%rocAssoc) is export {*}
+proto sub FOR($) is export {*}
 multi sub FOR(%rocAssoc where is-roc-associate(%rocAssoc)) {
     1 - NPV(%rocAssoc)
 }
@@ -89,7 +89,7 @@ multi sub FOR(@rocs where ([&&] @rocs.map({ is-roc-associate($_) }))) {
     @rocs.map({ FOR($_) }).Array
 }
 
-proto sub F1(%rocAssoc) is export {*}
+proto sub F1($) is export {*}
 multi sub F1(%rocAssoc where is-roc-associate(%rocAssoc)) {
     2 * PPV(%rocAssoc) * TPR(%rocAssoc) / (PPV(%rocAssoc) + TPR(%rocAssoc));
 }
@@ -108,7 +108,7 @@ sub AUROC(@rocs where ([&&] @rocs.map({ is-roc-associate($_) }))) is export {
         return $sum;
 }
 
-proto sub MCC(%rocAssoc) is export {*}
+proto sub MCC($) is export {*}
 multi sub MCC(%rocAssoc where is-roc-associate(%rocAssoc)) {
         my ($tp, $tn, $fp, $fn);
         my ($tpfp, $tpfn, $tnfp, $tnfn);
@@ -154,7 +154,11 @@ my %ROCFunctions =
         'MatthewsCorrelationCoefficient' => &MCC;
 
 
-proto roc-functions($spec) is export {*}
+proto roc-functions(|) is export {*}
+
+multi sub roc-functions() {
+        roc-functions('Functions')
+}
 
 multi sub roc-functions(Str $spec) {
     given $spec.lc {
