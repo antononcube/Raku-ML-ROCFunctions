@@ -98,25 +98,25 @@ multi sub F1(@rocs where ([&&] @rocs.map({ is-roc-associate($_) }))) {
 }
 
 sub AUROC(@rocs where ([&&] @rocs.map({ is-roc-associate($_) }))) is export {
-        my @fprs = @rocs.map({ FPR($_) }).Array.prepend(0).append(1);
-        my @tprs = @rocs.map({ TPR($_) }).Array.prepend(0).append(1);
+    my @fprs = @rocs.map({ FPR($_) }).Array.prepend(0).append(1);
+    my @tprs = @rocs.map({ TPR($_) }).Array.prepend(0).append(1);
 
-        my $sum = 0;
-        for 0..^(@fprs.elems-1) -> $i {
-                $sum += (@fprs[$i+1] - @fprs[$i]) * (@tprs[$i] + (@tprs[$i+1] - @tprs[$i]) / 2)
-        }
-        return $sum;
+    my $sum = 0;
+    for 0 ..^ (@fprs.elems - 1) -> $i {
+        $sum += (@fprs[$i + 1] - @fprs[$i]) * (@tprs[$i] + (@tprs[$i + 1] - @tprs[$i]) / 2)
+    }
+    return $sum;
 }
 
 proto sub MCC($) is export {*}
 multi sub MCC(%rocAssoc where is-roc-associate(%rocAssoc)) {
-        my ($tp, $tn, $fp, $fn);
-        my ($tpfp, $tpfn, $tnfp, $tnfn);
+    my ($tp, $tn, $fp, $fn);
+    my ($tpfp, $tpfn, $tnfp, $tnfn);
 
-        ($tp, $tn, $fp, $fn) = (&TPR, &SPC, &FPR, &FNR).map({ $_(%rocAssoc) });
-        ($tpfp, $tpfn, $tnfp, $tnfn) = ($tp + $fp, $tp + $fn, $tn + $fp, $tn + $fn).map({ $_ == 0 ?? 1 !! $_ });
+    ($tp, $tn, $fp, $fn) = (&TPR, &SPC, &FPR, &FNR).map({ $_(%rocAssoc) });
+    ($tpfp, $tpfn, $tnfp, $tnfn) = ($tp + $fp, $tp + $fn, $tn + $fp, $tn + $fn).map({ $_ == 0 ?? 1 !! $_ });
 
-        ($tp * $tn - $fp * $fn) / sqrt( $tpfp * $tpfn * $tnfp * $tnfn )
+    ($tp * $tn - $fp * $fn) / sqrt($tpfp * $tpfn * $tnfp * $tnfn)
 }
 multi sub MCC(@rocs where ([&&] @rocs.map({ is-roc-associate($_) }))) {
     @rocs.map({ MCC($_) }).Array
@@ -157,7 +157,7 @@ my %ROCFunctions =
 proto roc-functions(|) is export {*}
 
 multi sub roc-functions() {
-        roc-functions('Functions')
+    roc-functions('Functions')
 }
 
 multi sub roc-functions(Str $spec) {
@@ -174,4 +174,42 @@ multi sub roc-functions(Str $spec) {
 
 multi sub roc-functions(@spec where @spec.all ~~ Str) {
     %ROCFunctions{|@spec}
+}
+
+
+#------------------------------------------------------------
+# To ROC hash
+#------------------------------------------------------------
+
+proto to-roc-hash (|) is export {*}
+
+multi sub to-roc-hash(Str :$sep = '-', :$true-label!, :$false-label!, :$actual!, :$predicted!) {
+    to-roc-hash($true-label, $false-label, $actual, $predicted, :$sep);
+}
+
+multi sub to-roc-hash($true-label, $false-label, @actual-labels, @predicted-labels, Str :$sep = '-') {
+
+    if @actual-labels.elems != @predicted-labels.elems {
+        die 'The lengths of the second and third arguments are expected to be the same.';
+    }
+
+    # "Empty" ROC hash
+    my %emptyROC = (($true-label, $false-label) X ($true-label, $false-label)).map({ $_.join($sep) }) X=> 0;
+
+    # Derive TruePositive, FalsePositive, TrueNegative, and FalseNegative
+    my %res = (@actual-labels Z @predicted-labels).categorize({ $_.join($sep) }).map({ $_.key => $_.value.elems });
+
+    # Merge empty and derived hashes
+    %res = %emptyROC, %res;
+
+    return to-roc-hash($true-label, $false-label, %res, :$sep);
+}
+
+multi sub to-roc-hash($true-label, $false-label, %apf, Str :$sep = '-') {
+    %(
+        'TruePositive' => %apf{($true-label, $true-label).join($sep)},
+        'FalsePositive' => %apf{($false-label, $true-label).join($sep)},
+        'TrueNegative' => %apf{($false-label, $false-label).join($sep)},
+        'FalseNegative' => %apf{($true-label, $false-label).join($sep)}
+    )
 }
