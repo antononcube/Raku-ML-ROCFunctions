@@ -160,10 +160,10 @@ multi sub roc-functions(Str $spec) {
     given $spec.lc {
         when 'Methods'.lc { <FunctionInterpretations FunctionNames Functions Methods Properties> }
         when 'Properties'.lc { roc-functions('methods') }
-        when 'FunctionNames'.lc { %ROCAcronyms.keys }
+        when 'FunctionNames'.lc { %ROCAcronyms.keys.List }
         when 'FunctionInterpretations'.lc { %ROCAcronyms }
         when 'FunctionsAssociation'.lc { %ROCFunctions }
-        when 'Functions'.lc { %ROCFunctions.values.unique }
+        when 'Functions'.lc { %ROCFunctions.values.unique.List }
         default { %ROCFunctions{$spec} }
     }
 }
