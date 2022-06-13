@@ -1,0 +1,24 @@
+use v6.d;
+use Test;
+
+use lib '.';
+use lib './lib';
+
+use ML::ROCFunctions;
+
+plan 4;
+
+## 1
+isa-ok roc-functions('properties'), List, 'properties';
+
+## 2
+is roc-functions('Functions').all ~~ Callable, True, 'Functions';
+
+## 3
+isa-ok roc-functions('FunctionInterpretations'), Hash, 'FunctionInterpretations';
+
+## 4
+isa-ok roc-functions('FunctionNames'), List, 'FunctionNames';
+
+done-testing;
+
