@@ -44,10 +44,22 @@ Here are some retrieval functions:
 ```perl6
 use ML::ROCFunctions;
 say roc-functions('properties');
-say roc-functions('FPR');
 ```
 ```
 # (FunctionInterpretations FunctionNames Functions Methods Properties)
+```
+
+```perl6
+roc-functions('FunctionInterpretations')
+```
+```
+# {ACC => accuracy, AUROC => area under the ROC curve, Accuracy => same as ACC, F1 => F1 score, FDR => false discovery rate, FNR => false negative rate, FOR => false omission rate, FPR => false positive rate, MCC => Matthews correlation coefficient, NPV => negative predictive value, PPV => positive predictive value, Precision => same as PPV, Recall => same as TPR, SPC => specificity, Sensitivity => same as TPR, TNR => true negative rate, TPR => true positive rate}
+```
+
+```perl6
+say roc-functions('FPR');
+```
+```
 # &FPR
 ```
 
@@ -66,8 +78,8 @@ records-summary(@dfRandomLabels)
 # +--------------+--------------+
 # | Predicted    | Actual       |
 # +--------------+--------------+
-# | false => 101 | true  => 101 |
-# | true  => 99  | false => 99  |
+# | false => 101 | false => 100 |
+# | true  => 99  | true  => 100 |
 # +--------------+--------------+
 ```
 
@@ -78,16 +90,16 @@ use Data::Reshapers;
 to-pretty-table(@dfRandomLabels.pick(6))
 ```
 ```
-# +-----------+--------+
-# | Predicted | Actual |
-# +-----------+--------+
-# |   false   |  true  |
-# |   false   |  true  |
-# |    true   |  true  |
-# |    true   | false  |
-# |    true   | false  |
-# |   false   | false  |
-# +-----------+--------+
+# +--------+-----------+
+# | Actual | Predicted |
+# +--------+-----------+
+# | false  |    true   |
+# |  true  |    true   |
+# | false  |   false   |
+# | false  |   false   |
+# |  true  |    true   |
+# | false  |   false   |
+# +--------+-----------+
 ```
 
 Here we make the corresponding ROC hash-map:
@@ -96,7 +108,7 @@ Here we make the corresponding ROC hash-map:
 to-roc-hash('true', 'false', @dfRandomLabels.map({$_<Actual>}), @dfRandomLabels.map({$_<Predicted>}))
 ```
 ```
-# {FalseNegative => 53, FalsePositive => 51, TrueNegative => 48, TruePositive => 48}
+# {FalseNegative => 52, FalsePositive => 51, TrueNegative => 49, TruePositive => 48}
 ```
 
 ### Multiple ROC records
@@ -108,16 +120,16 @@ my @dfRandomLabels2 = random-tabular-dataset(200, <Threshold Actual Predicted>, 
 records-summary(@dfRandomLabels2)
 ```
 ```
-# +--------------+--------------+-----------------+
-# | Predicted    | Actual       | Threshold       |
-# +--------------+--------------+-----------------+
-# | true  => 107 | false => 106 | Min    => 0.2   |
-# | false => 93  | true  => 94  | 1st-Qu => 0.2   |
-# |              |              | Mean   => 0.408 |
-# |              |              | Median => 0.4   |
-# |              |              | 3rd-Qu => 0.6   |
-# |              |              | Max    => 0.6   |
-# +--------------+--------------+-----------------+
+# +-----------------+--------------+--------------+
+# | Threshold       | Predicted    | Actual       |
+# +-----------------+--------------+--------------+
+# | Min    => 0.2   | true  => 110 | true  => 103 |
+# | 1st-Qu => 0.2   | false => 90  | false => 97  |
+# | Mean   => 0.407 |              |              |
+# | Median => 0.4   |              |              |
+# | 3rd-Qu => 0.6   |              |              |
+# | Max    => 0.6   |              |              |
+# +-----------------+--------------+--------------+
 ```
 
 **Remark:** Threshold parameters are typically used while tuning Machine Learning (ML) classifiers.
@@ -133,35 +145,35 @@ records-summary(%groups)
 # +-------------+-------------+---------------+
 # | Actual      | Predicted   | Threshold     |
 # +-------------+-------------+---------------+
-# | true  => 38 | true  => 40 | Min    => 0.6 |
-# | false => 36 | false => 34 | 1st-Qu => 0.6 |
+# | false => 37 | true  => 44 | Min    => 0.6 |
+# | true  => 29 | false => 22 | 1st-Qu => 0.6 |
 # |             |             | Mean   => 0.6 |
 # |             |             | Median => 0.6 |
 # |             |             | 3rd-Qu => 0.6 |
 # |             |             | Max    => 0.6 |
 # +-------------+-------------+---------------+
 # summary of 0.4 =>
-# +-------------+---------------+-------------+
-# | Predicted   | Threshold     | Actual      |
-# +-------------+---------------+-------------+
-# | true  => 31 | Min    => 0.4 | false => 32 |
-# | false => 29 | 1st-Qu => 0.4 | true  => 28 |
-# |             | Mean   => 0.4 |             |
-# |             | Median => 0.4 |             |
-# |             | 3rd-Qu => 0.4 |             |
-# |             | Max    => 0.4 |             |
-# +-------------+---------------+-------------+
+# +-------------+-------------+---------------+
+# | Predicted   | Actual      | Threshold     |
+# +-------------+-------------+---------------+
+# | true  => 38 | true  => 44 | Min    => 0.4 |
+# | false => 37 | false => 31 | 1st-Qu => 0.4 |
+# |             |             | Mean   => 0.4 |
+# |             |             | Median => 0.4 |
+# |             |             | 3rd-Qu => 0.4 |
+# |             |             | Max    => 0.4 |
+# +-------------+-------------+---------------+
 # summary of 0.2 =>
-# +---------------+-------------+-------------+
-# | Threshold     | Actual      | Predicted   |
-# +---------------+-------------+-------------+
-# | Min    => 0.2 | false => 38 | true  => 36 |
-# | 1st-Qu => 0.2 | true  => 28 | false => 30 |
-# | Mean   => 0.2 |             |             |
-# | Median => 0.2 |             |             |
-# | 3rd-Qu => 0.2 |             |             |
-# | Max    => 0.2 |             |             |
-# +---------------+-------------+-------------+
+# +-------------+-------------+---------------+
+# | Actual      | Predicted   | Threshold     |
+# +-------------+-------------+---------------+
+# | true  => 30 | false => 31 | Min    => 0.2 |
+# | false => 29 | true  => 28 | 1st-Qu => 0.2 |
+# |             |             | Mean   => 0.2 |
+# |             |             | Median => 0.2 |
+# |             |             | 3rd-Qu => 0.2 |
+# |             |             | Max    => 0.2 |
+# +-------------+-------------+---------------+
 ```
 
 Here we find and print the ROC records (hash-maps) for each unique threshold value:
@@ -173,9 +185,9 @@ my @rocs = do for %groups.kv -> $k, $v {
 .say for @rocs;
 ```
 ```
-# {FalseNegative => 20, FalsePositive => 22, TrueNegative => 14, TruePositive => 18}
-# {FalseNegative => 8, FalsePositive => 11, TrueNegative => 21, TruePositive => 20}
-# {FalseNegative => 14, FalsePositive => 22, TrueNegative => 16, TruePositive => 14}
+# {FalseNegative => 13, FalsePositive => 28, TrueNegative => 9, TruePositive => 16}
+# {FalseNegative => 23, FalsePositive => 17, TrueNegative => 14, TruePositive => 21}
+# {FalseNegative => 15, FalsePositive => 13, TrueNegative => 16, TruePositive => 15}
 ```
 
 ### Application of ROC functions
@@ -196,13 +208,13 @@ my @rocRes = @rocs.map( -> $r { @funcs.map({ $_.name => $_($r) }).Hash });
 say to-pretty-table(@rocRes);
 ```
 ```
-# +----------+----------+----------+----------+-----------+----------+
-# |   TPR    |   SPC    |   PPV    |   NPV    |    MCC    |   ACC    |
-# +----------+----------+----------+----------+-----------+----------+
-# | 0.473684 | 0.388889 | 0.450000 | 0.411765 | -0.137924 | 0.432432 |
-# | 0.714286 | 0.656250 | 0.645161 | 0.724138 |  0.371161 | 0.683333 |
-# | 0.500000 | 0.421053 | 0.388889 | 0.533333 | -0.079195 | 0.454545 |
-# +----------+----------+----------+----------+-----------+----------+
+# +-----------+----------+----------+----------+----------+----------+
+# |    MCC    |   TPR    |   PPV    |   SPC    |   ACC    |   NPV    |
+# +-----------+----------+----------+----------+----------+----------+
+# | -0.215545 | 0.551724 | 0.363636 | 0.243243 | 0.378788 | 0.409091 |
+# | -0.071138 | 0.477273 | 0.552632 | 0.451613 | 0.466667 | 0.378378 |
+# |  0.051793 | 0.500000 | 0.535714 | 0.551724 | 0.525424 | 0.516129 |
+# +-----------+----------+----------+----------+----------+----------+
 ```
 
 -------

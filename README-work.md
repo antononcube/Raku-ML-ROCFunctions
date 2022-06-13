@@ -44,6 +44,13 @@ Here are some retrieval functions:
 ```perl6
 use ML::ROCFunctions;
 say roc-functions('properties');
+```
+
+```perl6
+roc-functions('FunctionInterpretations')
+```
+
+```perl6
 say roc-functions('FPR');
 ```
 
