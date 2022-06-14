@@ -1,6 +1,8 @@
 # ML::ROCFunctions
 
-This repository has the code of a Raku package for Receiver Operating Characteristic (ROC) functions.
+This repository has the code of a Raku package for 
+[Receiver Operating Characteristic (ROC)](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) 
+functions.
 
 The ROC framework is used for analysis and tuning of binary classifiers, [Wk1]. 
 (The classifiers are assumed to classify into a positive/true label or a negative/false label. )
@@ -55,6 +57,13 @@ say roc-functions('FPR');
 ```
 
 ### Single ROC record
+
+**Definition:** A ROC record (ROC-hash or ROC-hash-map) is an object of type `Associative` that has the keys:
+"FalseNegative", "FalsePositive", "TrueNegative", "TruePositive". Here is an example:
+
+```{perl6, eval=FALSE}
+{FalseNegative => 50, FalsePositive => 51, TrueNegative => 60, TruePositive => 39}
+```
 
 Here we generate a random "dataset" with columns "Actual" and "Predicted" that have the values "true" and "false" 
 and show the summary:
@@ -152,4 +161,19 @@ say to-pretty-table(@rocRes);
 (2021),
 [R-packages at GitHub/antononcube](https://github.com/antononcube/R-packages).
 
-[AAp1] Anton Antonov,
+[AAp3] Anton Antonov,
+[Data::Generators Raku package](https://github.com/antononcube/Raku-Data-Generators),
+(2021),
+[GitHub/antononcube](https://github.com/antononcube).
+
+[AAp4] Anton Antonov,
+[Data::Reshapers Raku package](https://github.com/antononcube/Raku-Data-Reshapers),
+(2021),
+[GitHub/antononcube](https://github.com/antononcube).
+
+[AAp5] Anton Antonov,
+[Data::Summarizers Raku package](https://github.com/antononcube/Raku-Data-Summarizers),
+(2021),
+[GitHub/antononcube](https://github.com/antononcube).
+
+
