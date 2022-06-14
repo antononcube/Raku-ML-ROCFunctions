@@ -33,6 +33,14 @@ multi sub SPC(@rocs where ([&&] @rocs.map({ is-roc-associate($_) }))) {
     @rocs.map({ SPC($_) }).Array
 }
 
+proto sub TNR($) is export {*}
+multi sub TNR(%rocAssoc where is-roc-associate(%rocAssoc)) {
+   SPC(%rocAssoc)
+}
+multi sub TNR(@rocs where ([&&] @rocs.map({ is-roc-associate($_) }))) {
+    @rocs.map({ SPC($_) }).Array
+}
+
 proto sub PPV($) is export {*}
 multi sub PPV(%rocAssoc where is-roc-associate(%rocAssoc)) {
     (%rocAssoc<TruePositive>) / (%rocAssoc<TruePositive> + %rocAssoc<FalsePositive>);
