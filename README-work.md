@@ -71,7 +71,10 @@ and show the summary:
 ```perl6
 use Data::Generators;
 use Data::Summarizers;
-my @dfRandomLabels = random-tabular-dataset(200, <Actual Predicted>, generators=>{Actual => <true false>, Predicted => <true false>});
+my @dfRandomLabels = 
+        random-tabular-dataset(200, <Actual Predicted>, 
+        generators => {Actual => <true false>, 
+                       Predicted => <true false>});
 records-summary(@dfRandomLabels)
 ```
 
@@ -93,7 +96,11 @@ to-roc-hash('true', 'false', @dfRandomLabels.map({$_<Actual>}), @dfRandomLabels.
 Here we make random dataset with entries that associated with a certain threshold parameter with three unique values:
 
 ```perl6
-my @dfRandomLabels2 = random-tabular-dataset(200, <Threshold Actual Predicted>, generators=>{Threshold => (0.2, 0.4, 0.6), Actual => <true false>, Predicted => <true false>});
+my @dfRandomLabels2 = 
+        random-tabular-dataset(200, <Threshold Actual Predicted>, 
+                generators => {Threshold => (0.2, 0.4, 0.6), 
+                               Actual => <true false>, 
+                               Predicted => <true false>});
 records-summary(@dfRandomLabels2)
 ```
 
@@ -142,7 +149,6 @@ say to-pretty-table(@rocRes);
 ["Basic example of using ROC with Linear regression"](https://mathematicaforprediction.wordpress.com/2016/10/12/basic-example-of-using-roc-with-linear-regression/),
 (2016),
 [MathematicaForPrediction at WordPress](https://mathematicaforprediction.wordpress.com).
-
 
 [AA2] Anton Antonov,
 ["Introduction to data wrangling with Raku"](https://rakuforprediction.wordpress.com/2021/12/31/introduction-to-data-wrangling-with-raku/),

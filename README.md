@@ -1,6 +1,8 @@
 # ML::ROCFunctions
 
-This repository has the code of a Raku package for Receiver Operating Characteristic (ROC) functions.
+This repository has the code of a Raku package for 
+[Receiver Operating Characteristic (ROC)](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) 
+functions.
 
 The ROC framework is used for analysis and tuning of binary classifiers, [Wk1]. 
 (The classifiers are assumed to classify into a positive/true label or a negative/false label. )
@@ -78,15 +80,18 @@ and show the summary:
 ```perl6
 use Data::Generators;
 use Data::Summarizers;
-my @dfRandomLabels = random-tabular-dataset(200, <Actual Predicted>, generators=>{Actual => <true false>, Predicted => <true false>});
+my @dfRandomLabels = 
+        random-tabular-dataset(200, <Actual Predicted>, 
+        generators => {Actual => <true false>, 
+                       Predicted => <true false>});
 records-summary(@dfRandomLabels)
 ```
 ```
 # +--------------+--------------+
 # | Actual       | Predicted    |
 # +--------------+--------------+
-# | true  => 107 | true  => 101 |
-# | false => 93  | false => 99  |
+# | true  => 109 | false => 110 |
+# | false => 91  | true  => 90  |
 # +--------------+--------------+
 ```
 
@@ -100,12 +105,12 @@ to-pretty-table(@dfRandomLabels.pick(6))
 # +--------+-----------+
 # | Actual | Predicted |
 # +--------+-----------+
-# | false  |    true   |
-# | false  |    true   |
-# | false  |   false   |
-# | false  |   false   |
-# |  true  |   false   |
 # |  true  |    true   |
+# |  true  |    true   |
+# | false  |   false   |
+# |  true  |    true   |
+# |  true  |   false   |
+# |  true  |   false   |
 # +--------+-----------+
 ```
 
@@ -115,7 +120,7 @@ Here we make the corresponding ROC hash-map:
 to-roc-hash('true', 'false', @dfRandomLabels.map({$_<Actual>}), @dfRandomLabels.map({$_<Predicted>}))
 ```
 ```
-# {FalseNegative => 54, FalsePositive => 48, TrueNegative => 45, TruePositive => 53}
+# {FalseNegative => 57, FalsePositive => 38, TrueNegative => 53, TruePositive => 52}
 ```
 
 ### Multiple ROC records
@@ -123,20 +128,24 @@ to-roc-hash('true', 'false', @dfRandomLabels.map({$_<Actual>}), @dfRandomLabels.
 Here we make random dataset with entries that associated with a certain threshold parameter with three unique values:
 
 ```perl6
-my @dfRandomLabels2 = random-tabular-dataset(200, <Threshold Actual Predicted>, generators=>{Threshold => (0.2, 0.4, 0.6), Actual => <true false>, Predicted => <true false>});
+my @dfRandomLabels2 = 
+        random-tabular-dataset(200, <Threshold Actual Predicted>, 
+                generators => {Threshold => (0.2, 0.4, 0.6), 
+                               Actual => <true false>, 
+                               Predicted => <true false>});
 records-summary(@dfRandomLabels2)
 ```
 ```
-# +--------------+--------------+-----------------+
-# | Actual       | Predicted    | Threshold       |
-# +--------------+--------------+-----------------+
-# | false => 101 | false => 109 | Min    => 0.2   |
-# | true  => 99  | true  => 91  | 1st-Qu => 0.2   |
-# |              |              | Mean   => 0.399 |
-# |              |              | Median => 0.4   |
-# |              |              | 3rd-Qu => 0.6   |
-# |              |              | Max    => 0.6   |
-# +--------------+--------------+-----------------+
+# +---------------+--------------+--------------+
+# | Threshold     | Predicted    | Actual       |
+# +---------------+--------------+--------------+
+# | Min    => 0.2 | true  => 104 | false => 103 |
+# | 1st-Qu => 0.2 | false => 96  | true  => 97  |
+# | Mean   => 0.4 |              |              |
+# | Median => 0.4 |              |              |
+# | 3rd-Qu => 0.6 |              |              |
+# | Max    => 0.6 |              |              |
+# +---------------+--------------+--------------+
 ```
 
 **Remark:** Threshold parameters are typically used while tuning Machine Learning (ML) classifiers.
@@ -149,38 +158,38 @@ records-summary(%groups)
 ```
 ```
 # summary of 0.6 =>
-# +---------------+-------------+-------------+
-# | Threshold     | Predicted   | Actual      |
-# +---------------+-------------+-------------+
-# | Min    => 0.6 | false => 44 | false => 35 |
-# | 1st-Qu => 0.6 | true  => 21 | true  => 30 |
-# | Mean   => 0.6 |             |             |
-# | Median => 0.6 |             |             |
-# | 3rd-Qu => 0.6 |             |             |
-# | Max    => 0.6 |             |             |
-# +---------------+-------------+-------------+
-# summary of 0.4 =>
-# +---------------+-------------+-------------+
-# | Threshold     | Predicted   | Actual      |
-# +---------------+-------------+-------------+
-# | Min    => 0.4 | true  => 37 | false => 35 |
-# | 1st-Qu => 0.4 | false => 32 | true  => 34 |
-# | Mean   => 0.4 |             |             |
-# | Median => 0.4 |             |             |
-# | 3rd-Qu => 0.4 |             |             |
-# | Max    => 0.4 |             |             |
-# +---------------+-------------+-------------+
+# +-------------+---------------+-------------+
+# | Actual      | Threshold     | Predicted   |
+# +-------------+---------------+-------------+
+# | false => 35 | Min    => 0.6 | true  => 37 |
+# | true  => 29 | 1st-Qu => 0.6 | false => 27 |
+# |             | Mean   => 0.6 |             |
+# |             | Median => 0.6 |             |
+# |             | 3rd-Qu => 0.6 |             |
+# |             | Max    => 0.6 |             |
+# +-------------+---------------+-------------+
 # summary of 0.2 =>
-# +---------------+-------------+-------------+
-# | Threshold     | Predicted   | Actual      |
-# +---------------+-------------+-------------+
-# | Min    => 0.2 | true  => 33 | true  => 35 |
-# | 1st-Qu => 0.2 | false => 33 | false => 31 |
-# | Mean   => 0.2 |             |             |
-# | Median => 0.2 |             |             |
-# | 3rd-Qu => 0.2 |             |             |
-# | Max    => 0.2 |             |             |
-# +---------------+-------------+-------------+
+# +-------------+---------------+-------------+
+# | Predicted   | Threshold     | Actual      |
+# +-------------+---------------+-------------+
+# | false => 33 | Min    => 0.2 | false => 34 |
+# | true  => 31 | 1st-Qu => 0.2 | true  => 30 |
+# |             | Mean   => 0.2 |             |
+# |             | Median => 0.2 |             |
+# |             | 3rd-Qu => 0.2 |             |
+# |             | Max    => 0.2 |             |
+# +-------------+---------------+-------------+
+# summary of 0.4 =>
+# +-------------+---------------+-------------+
+# | Actual      | Threshold     | Predicted   |
+# +-------------+---------------+-------------+
+# | true  => 38 | Min    => 0.4 | false => 36 |
+# | false => 34 | 1st-Qu => 0.4 | true  => 36 |
+# |             | Mean   => 0.4 |             |
+# |             | Median => 0.4 |             |
+# |             | 3rd-Qu => 0.4 |             |
+# |             | Max    => 0.4 |             |
+# +-------------+---------------+-------------+
 ```
 
 Here we find and print the ROC records (hash-maps) for each unique threshold value:
@@ -192,9 +201,9 @@ my @rocs = do for %groups.kv -> $k, $v {
 .say for @rocs;
 ```
 ```
-# {FalseNegative => 18, FalsePositive => 9, TrueNegative => 26, TruePositive => 12}
-# {FalseNegative => 16, FalsePositive => 19, TrueNegative => 16, TruePositive => 18}
-# {FalseNegative => 20, FalsePositive => 18, TrueNegative => 13, TruePositive => 15}
+# {FalseNegative => 16, FalsePositive => 24, TrueNegative => 11, TruePositive => 13}
+# {FalseNegative => 18, FalsePositive => 19, TrueNegative => 15, TruePositive => 12}
+# {FalseNegative => 17, FalsePositive => 15, TrueNegative => 19, TruePositive => 21}
 ```
 
 ### Application of ROC functions
@@ -215,13 +224,13 @@ my @rocRes = @rocs.map( -> $r { @funcs.map({ $_.name => $_($r) }).Hash });
 say to-pretty-table(@rocRes);
 ```
 ```
-# +-----------+----------+----------+----------+----------+----------+
-# |    MCC    |   ACC    |   PPV    |   SPC    |   TPR    |   NPV    |
-# +-----------+----------+----------+----------+----------+----------+
-# |  0.152075 | 0.584615 | 0.571429 | 0.742857 | 0.400000 | 0.590909 |
-# | -0.013481 | 0.492754 | 0.486486 | 0.457143 | 0.529412 | 0.500000 |
-# | -0.152080 | 0.424242 | 0.454545 | 0.419355 | 0.428571 | 0.393939 |
-# +-----------+----------+----------+----------+----------+----------+
+# +----------+-----------+----------+----------+----------+----------+
+# |   ACC    |    MCC    |   NPV    |   TPR    |   PPV    |   SPC    |
+# +----------+-----------+----------+----------+----------+----------+
+# | 0.375000 | -0.239599 | 0.407407 | 0.448276 | 0.351351 | 0.314286 |
+# | 0.421875 | -0.158958 | 0.454545 | 0.400000 | 0.387097 | 0.441176 |
+# | 0.555556 |  0.111457 | 0.527778 | 0.552632 | 0.583333 | 0.558824 |
+# +----------+-----------+----------+----------+----------+----------+
 ```
 
 -------
@@ -236,7 +245,6 @@ say to-pretty-table(@rocRes);
 ["Basic example of using ROC with Linear regression"](https://mathematicaforprediction.wordpress.com/2016/10/12/basic-example-of-using-roc-with-linear-regression/),
 (2016),
 [MathematicaForPrediction at WordPress](https://mathematicaforprediction.wordpress.com).
-
 
 [AA2] Anton Antonov,
 ["Introduction to data wrangling with Raku"](https://rakuforprediction.wordpress.com/2021/12/31/introduction-to-data-wrangling-with-raku/),
