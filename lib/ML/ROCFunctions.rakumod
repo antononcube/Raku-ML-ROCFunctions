@@ -106,8 +106,8 @@ multi sub F1(@rocs where ([&&] @rocs.map({ is-roc-associate($_) }))) {
 }
 
 sub AUROC(@rocs where ([&&] @rocs.map({ is-roc-associate($_) }))) is export {
-    my @fprs = @rocs.map({ FPR($_) }).Array.prepend(0).append(1);
-    my @tprs = @rocs.map({ TPR($_) }).Array.prepend(0).append(1);
+    my @fprs = FPR(@rocs).Array.prepend(0).append(1);
+    my @tprs = TPR(@rocs).Array.prepend(0).append(1);
 
     my $sum = 0;
     for 0 ..^ (@fprs.elems - 1) -> $i {
