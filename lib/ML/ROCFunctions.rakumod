@@ -143,8 +143,8 @@ my %ROCAcronyms =
         'MCC' => 'Matthews correlation coefficient', 'Recall' => 'same as TPR', 'Precision' => 'same as PPV',
         'Accuracy' => 'same as ACC', 'Sensitivity' => 'same as TPR';
 
-sub roc-accronyms-dictionary() is export {
-    %ROCAcronyms
+sub roc-acronyms-hash() is export {
+    return %ROCAcronyms.clone;
 }
 
 
@@ -172,8 +172,8 @@ multi sub roc-functions(Str $spec) {
     given $spec.lc {
         when 'Methods'.lc { <FunctionInterpretations FunctionNames Functions Methods Properties> }
         when 'Properties'.lc { roc-functions('methods') }
-        when 'FunctionNames'.lc { %ROCAcronyms.keys.List }
-        when 'FunctionInterpretations'.lc { %ROCAcronyms }
+        when 'FunctionNames'.lc { roc-acronyms-hash().keys.List }
+        when 'FunctionInterpretations'.lc { roc-acronyms-hash() }
         when 'FunctionsAssociation'.lc { %ROCFunctions }
         when 'Functions'.lc { %ROCFunctions.values.unique.List }
         default { %ROCFunctions{$spec} }
