@@ -11,6 +11,8 @@ For computational introduction to ROC utilization (in Mathematica) see the artic
 ["Basic example of using ROC with Linear regression"](https://mathematicaforprediction.wordpress.com/2016/10/12/basic-example-of-using-roc-with-linear-regression/),
 [AA1].
 
+This package has counterparts in Mathematica, Python, and R. See [AAp1, AAp2, AAp3].
+
 The examples below use the packages 
 ["Data::Generators"](https://raku.land/cpan:ANTONOV/Data::Generators), 
 ["Data::Reshapers"](https://raku.land/cpan:ANTONOV/Data::Reshapers), and 
@@ -90,8 +92,8 @@ records-summary(@dfRandomLabels)
 # +--------------+--------------+
 # | Actual       | Predicted    |
 # +--------------+--------------+
-# | true  => 109 | false => 110 |
-# | false => 91  | true  => 90  |
+# | false => 107 | false => 102 |
+# | true  => 93  | true  => 98  |
 # +--------------+--------------+
 ```
 
@@ -102,16 +104,16 @@ use Data::Reshapers;
 to-pretty-table(@dfRandomLabels.pick(6))
 ```
 ```
-# +--------+-----------+
-# | Actual | Predicted |
-# +--------+-----------+
-# |  true  |    true   |
-# |  true  |    true   |
-# | false  |   false   |
-# |  true  |    true   |
-# |  true  |   false   |
-# |  true  |   false   |
-# +--------+-----------+
+# +-----------+--------+
+# | Predicted | Actual |
+# +-----------+--------+
+# |   false   |  true  |
+# |    true   | false  |
+# |   false   |  true  |
+# |   false   |  true  |
+# |    true   | false  |
+# |   false   | false  |
+# +-----------+--------+
 ```
 
 Here we make the corresponding ROC hash-map:
@@ -120,7 +122,7 @@ Here we make the corresponding ROC hash-map:
 to-roc-hash('true', 'false', @dfRandomLabels.map({$_<Actual>}), @dfRandomLabels.map({$_<Predicted>}))
 ```
 ```
-# {FalseNegative => 57, FalsePositive => 38, TrueNegative => 53, TruePositive => 52}
+# {FalseNegative => 49, FalsePositive => 54, TrueNegative => 53, TruePositive => 44}
 ```
 
 ### Multiple ROC records
@@ -136,16 +138,16 @@ my @dfRandomLabels2 =
 records-summary(@dfRandomLabels2)
 ```
 ```
-# +---------------+--------------+--------------+
-# | Threshold     | Predicted    | Actual       |
-# +---------------+--------------+--------------+
-# | Min    => 0.2 | true  => 104 | false => 103 |
-# | 1st-Qu => 0.2 | false => 96  | true  => 97  |
-# | Mean   => 0.4 |              |              |
-# | Median => 0.4 |              |              |
-# | 3rd-Qu => 0.6 |              |              |
-# | Max    => 0.6 |              |              |
-# +---------------+--------------+--------------+
+# +-----------------+--------------+--------------+
+# | Threshold       | Predicted    | Actual       |
+# +-----------------+--------------+--------------+
+# | Min    => 0.2   | true  => 104 | false => 101 |
+# | 1st-Qu => 0.2   | false => 96  | true  => 99  |
+# | Mean   => 0.394 |              |              |
+# | Median => 0.4   |              |              |
+# | 3rd-Qu => 0.6   |              |              |
+# | Max    => 0.6   |              |              |
+# +-----------------+--------------+--------------+
 ```
 
 **Remark:** Threshold parameters are typically used while tuning Machine Learning (ML) classifiers.
@@ -159,37 +161,37 @@ records-summary(%groups)
 ```
 # summary of 0.6 =>
 # +-------------+---------------+-------------+
-# | Actual      | Threshold     | Predicted   |
+# | Predicted   | Threshold     | Actual      |
 # +-------------+---------------+-------------+
-# | false => 35 | Min    => 0.6 | true  => 37 |
-# | true  => 29 | 1st-Qu => 0.6 | false => 27 |
+# | true  => 32 | Min    => 0.6 | true  => 32 |
+# | false => 25 | 1st-Qu => 0.6 | false => 25 |
 # |             | Mean   => 0.6 |             |
 # |             | Median => 0.6 |             |
 # |             | 3rd-Qu => 0.6 |             |
 # |             | Max    => 0.6 |             |
 # +-------------+---------------+-------------+
-# summary of 0.2 =>
-# +-------------+---------------+-------------+
-# | Predicted   | Threshold     | Actual      |
-# +-------------+---------------+-------------+
-# | false => 33 | Min    => 0.2 | false => 34 |
-# | true  => 31 | 1st-Qu => 0.2 | true  => 30 |
-# |             | Mean   => 0.2 |             |
-# |             | Median => 0.2 |             |
-# |             | 3rd-Qu => 0.2 |             |
-# |             | Max    => 0.2 |             |
-# +-------------+---------------+-------------+
 # summary of 0.4 =>
-# +-------------+---------------+-------------+
-# | Actual      | Threshold     | Predicted   |
-# +-------------+---------------+-------------+
-# | true  => 38 | Min    => 0.4 | false => 36 |
-# | false => 34 | 1st-Qu => 0.4 | true  => 36 |
-# |             | Mean   => 0.4 |             |
-# |             | Median => 0.4 |             |
-# |             | 3rd-Qu => 0.4 |             |
-# |             | Max    => 0.4 |             |
-# +-------------+---------------+-------------+
+# +-------------+-------------+---------------+
+# | Predicted   | Actual      | Threshold     |
+# +-------------+-------------+---------------+
+# | false => 41 | true  => 41 | Min    => 0.4 |
+# | true  => 39 | false => 39 | 1st-Qu => 0.4 |
+# |             |             | Mean   => 0.4 |
+# |             |             | Median => 0.4 |
+# |             |             | 3rd-Qu => 0.4 |
+# |             |             | Max    => 0.4 |
+# +-------------+-------------+---------------+
+# summary of 0.2 =>
+# +---------------+-------------+-------------+
+# | Threshold     | Predicted   | Actual      |
+# +---------------+-------------+-------------+
+# | Min    => 0.2 | true  => 33 | false => 37 |
+# | 1st-Qu => 0.2 | false => 30 | true  => 26 |
+# | Mean   => 0.2 |             |             |
+# | Median => 0.2 |             |             |
+# | 3rd-Qu => 0.2 |             |             |
+# | Max    => 0.2 |             |             |
+# +---------------+-------------+-------------+
 ```
 
 Here we find and print the ROC records (hash-maps) for each unique threshold value:
@@ -201,9 +203,9 @@ my @rocs = do for %groups.kv -> $k, $v {
 .say for @rocs;
 ```
 ```
-# {FalseNegative => 16, FalsePositive => 24, TrueNegative => 11, TruePositive => 13}
-# {FalseNegative => 18, FalsePositive => 19, TrueNegative => 15, TruePositive => 12}
-# {FalseNegative => 17, FalsePositive => 15, TrueNegative => 19, TruePositive => 21}
+# {FalseNegative => 16, FalsePositive => 16, TrueNegative => 9, TruePositive => 16}
+# {FalseNegative => 22, FalsePositive => 20, TrueNegative => 19, TruePositive => 19}
+# {FalseNegative => 13, FalsePositive => 20, TrueNegative => 17, TruePositive => 13}
 ```
 
 ### Application of ROC functions
@@ -224,13 +226,13 @@ my @rocRes = @rocs.map( -> $r { @funcs.map({ $_.name => $_($r) }).Hash });
 say to-pretty-table(@rocRes);
 ```
 ```
-# +----------+-----------+----------+----------+----------+----------+
-# |   ACC    |    MCC    |   NPV    |   TPR    |   PPV    |   SPC    |
-# +----------+-----------+----------+----------+----------+----------+
-# | 0.375000 | -0.239599 | 0.407407 | 0.448276 | 0.351351 | 0.314286 |
-# | 0.421875 | -0.158958 | 0.454545 | 0.400000 | 0.387097 | 0.441176 |
-# | 0.555556 |  0.111457 | 0.527778 | 0.552632 | 0.583333 | 0.558824 |
-# +----------+-----------+----------+----------+----------+----------+
+# +----------+----------+-----------+----------+----------+----------+
+# |   ACC    |   SPC    |    MCC    |   TPR    |   PPV    |   NPV    |
+# +----------+----------+-----------+----------+----------+----------+
+# | 0.438596 | 0.360000 | -0.141393 | 0.500000 | 0.500000 | 0.360000 |
+# | 0.475000 | 0.487179 | -0.049420 | 0.463415 | 0.487179 | 0.463415 |
+# | 0.476190 | 0.459459 | -0.040574 | 0.500000 | 0.393939 | 0.566667 |
+# +----------+----------+-----------+----------+----------+----------+
 ```
 
 -------
@@ -251,7 +253,12 @@ say to-pretty-table(@rocRes);
 (2021),
 [RakuForPrediction at WordPress](https://rakuforprediction.wordpress.com).
 
-### Packages 
+### Packages
+
+[AAp0] Anton Antonov,
+[ML::ROCFunctions Raku package](https://github.com/antononcube/Raku-ML-ROCFunctions),
+(2022),
+[GitHub/antononcube](https://github.com/antononcube).
 
 [AAp1] Anton Antonov,
 [ROCFunctions Mathematica package](https://github.com/antononcube/MathematicaForPrediction/blob/master/ROCFunctions.m),
@@ -259,23 +266,26 @@ say to-pretty-table(@rocRes);
 [MathematicaForPrediction at GitHub/antononcube](https://github.com/antononcube/MathematicaForPrediction/).
 
 [AAp2] Anton Antonov,
+[ROCFunctions Python package](https://github.com/antononcube/Python-packages/tree/master/ROCFunctions),
+(2022),
+[Python-packages at GitHub/antononcube](https://github.com/antononcube/Python-packages).
+
+[AAp3] Anton Antonov,
 [ROCFunctions R package](https://github.com/antononcube/R-packages/tree/master/ROCFunctions),
 (2021),
 [R-packages at GitHub/antononcube](https://github.com/antononcube/R-packages).
 
-[AAp3] Anton Antonov,
+[AAp4] Anton Antonov,
 [Data::Generators Raku package](https://github.com/antononcube/Raku-Data-Generators),
 (2021),
 [GitHub/antononcube](https://github.com/antononcube).
 
-[AAp4] Anton Antonov,
+[AAp5] Anton Antonov,
 [Data::Reshapers Raku package](https://github.com/antononcube/Raku-Data-Reshapers),
 (2021),
 [GitHub/antononcube](https://github.com/antononcube).
 
-[AAp5] Anton Antonov,
+[AAp6] Anton Antonov,
 [Data::Summarizers Raku package](https://github.com/antononcube/Raku-Data-Summarizers),
 (2021),
 [GitHub/antononcube](https://github.com/antononcube).
-
-

@@ -11,6 +11,8 @@ For computational introduction to ROC utilization (in Mathematica) see the artic
 ["Basic example of using ROC with Linear regression"](https://mathematicaforprediction.wordpress.com/2016/10/12/basic-example-of-using-roc-with-linear-regression/),
 [AA1].
 
+This package has counterparts in Mathematica, Python, and R. See [AAp1, AAp2, AAp3].
+
 The examples below use the packages 
 ["Data::Generators"](https://raku.land/cpan:ANTONOV/Data::Generators), 
 ["Data::Reshapers"](https://raku.land/cpan:ANTONOV/Data::Reshapers), and 
@@ -155,7 +157,12 @@ say to-pretty-table(@rocRes);
 (2021),
 [RakuForPrediction at WordPress](https://rakuforprediction.wordpress.com).
 
-### Packages 
+### Packages
+
+[AAp0] Anton Antonov,
+[ML::ROCFunctions Raku package](https://github.com/antononcube/Raku-ML-ROCFunctions),
+(2022),
+[GitHub/antononcube](https://github.com/antononcube).
 
 [AAp1] Anton Antonov,
 [ROCFunctions Mathematica package](https://github.com/antononcube/MathematicaForPrediction/blob/master/ROCFunctions.m),
@@ -163,23 +170,26 @@ say to-pretty-table(@rocRes);
 [MathematicaForPrediction at GitHub/antononcube](https://github.com/antononcube/MathematicaForPrediction/).
 
 [AAp2] Anton Antonov,
+[ROCFunctions Python package](https://github.com/antononcube/Python-packages/tree/master/ROCFunctions),
+(2022),
+[Python-packages at GitHub/antononcube](https://github.com/antononcube/Python-packages).
+
+[AAp3] Anton Antonov,
 [ROCFunctions R package](https://github.com/antononcube/R-packages/tree/master/ROCFunctions),
 (2021),
 [R-packages at GitHub/antononcube](https://github.com/antononcube/R-packages).
 
-[AAp3] Anton Antonov,
+[AAp4] Anton Antonov,
 [Data::Generators Raku package](https://github.com/antononcube/Raku-Data-Generators),
 (2021),
 [GitHub/antononcube](https://github.com/antononcube).
 
-[AAp4] Anton Antonov,
+[AAp5] Anton Antonov,
 [Data::Reshapers Raku package](https://github.com/antononcube/Raku-Data-Reshapers),
 (2021),
 [GitHub/antononcube](https://github.com/antononcube).
 
-[AAp5] Anton Antonov,
+[AAp6] Anton Antonov,
 [Data::Summarizers Raku package](https://github.com/antononcube/Raku-Data-Summarizers),
 (2021),
 [GitHub/antononcube](https://github.com/antononcube).
-
-
