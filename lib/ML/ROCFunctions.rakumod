@@ -109,6 +109,10 @@ sub AUROC(@rocs where ([&&] @rocs.map({ is-roc-associate($_) }))) is export {
     my @fprs = FPR(@rocs).Array.prepend(0).append(1);
     my @tprs = TPR(@rocs).Array.prepend(0).append(1);
 
+    my @orderInds = @fprs.sort(:k);
+    @fprs = @fprs[@orderInds];
+    @tprs = @tprs[@orderInds];
+
     my $sum = 0;
     for 0 ..^ (@fprs.elems - 1) -> $i {
         $sum += (@fprs[$i + 1] - @fprs[$i]) * (@tprs[$i] + (@tprs[$i + 1] - @tprs[$i]) / 2)
